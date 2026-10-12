@@ -1,0 +1,77 @@
+
+const books = [
+  {
+    id: 1,
+    title: "Belajar JavaScript Dasar",
+    author: "Andi Prasetyo",
+    year: 2021,
+    description: "Panduan belajar JavaScript untuk pemula.",
+    image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500",
+  },
+  {
+    id: 2,
+    title: "React untuk Pemula",
+    author: "Dina Sari",
+    year: 2022,
+    description: "Mengenal dasar pengembangan aplikasi React.",
+    image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500",
+  },
+  {
+    id: 3,
+    title: "HTML dan CSS",
+    author: "Budi Santoso",
+    year: 2020,
+    description: "Belajar membuat halaman website.",
+    image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500",
+  },
+  {
+    id: 4,
+    title: "JavaScript Modern",
+    author: "Rina Amelia",
+    year: 2023,
+    description: "Mengenal fitur JavaScript modern.",
+    image: "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=500",
+  },
+  {
+    id: 5,
+    title: "React Hooks",
+    author: "Fajar Nugraha",
+    year: 2024,
+    description: "Belajar menggunakan Hooks dalam React.",
+    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500",
+  },
+  {
+    id: 6,
+    title: "Pemrograman Web",
+    author: "Siti Rahma",
+    year: 2021,
+    description: "Mempelajari dasar pemrograman web.",
+    image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500",
+  },
+  {
+    id: 7,
+    title: "UI Design",
+    author: "Agus Setiawan",
+    year: 2023,
+    description: "Mengenal desain antarmuka aplikasi.",
+    image: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=500",
+  },
+  {
+    id: 8,
+    title: "Belajar API",
+    author: "Nadia Putri",
+    year: 2022,
+    description: "Belajar mengambil data dari API.",
+    image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500",
+  },
+  {
+    id: 9,
+    title: "Proyek dengan React",
+    author: "Rizky Maulana",
+    year: 2024,
+    description: "Latihan membuat proyek website React.",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500",
+  },
+];
+
+export default books;

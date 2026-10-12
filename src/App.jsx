@@ -8,52 +8,20 @@ import {
   Route,
   useNavigate,
 } from 'react-router';
+import initialBooks from './Utils/books';
 import './App.css';
 
-const daftarBuku = [
-  {
-    judul: 'Atomic Habits',
-    penulis: 'James Clear',
-    kategori: 'Pengembangan Diri',
-    deskripsi:
-      'Perubahan kecil yang memberikan hasil luar biasa. Pelajari cara membangun kebiasaan baik dan meninggalkan kebiasaan buruk.',
-    harga: 'Rp89.000',
-    gambar:
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=85',
-  },
-  {
-    judul: 'Laskar Pelangi',
-    penulis: 'Andrea Hirata',
-    kategori: 'Novel',
-    deskripsi:
-      'Kisah inspiratif tentang persahabatan, pendidikan, dan semangat meraih cita-cita.',
-    harga: 'Rp75.000',
-    gambar:
-      'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=85',
-  },
-  {
-    judul: 'Laut Bercerita',
-    penulis: 'Leila S. Chudori',
-    kategori: 'Fiksi Sejarah',
-    deskripsi:
-      'Novel tentang persahabatan, keluarga, dan perjuangan yang meninggalkan kesan mendalam.',
-    harga: 'Rp99.000',
-    gambar:
-      'https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=900&q=85',
-  },
-];
-
-function AlbumContent({ pilihBuku }) {
+function AlbumContent({ books, tambahBuku, pilihBuku }) {
   const [bukuUtama, setBukuUtama] = useState(0);
-  const buku = daftarBuku[bukuUtama];
+  const buku = books[bukuUtama] || books[0];
 
   function bukuBerikutnya() {
-    setBukuUtama((index) => (index + 1) % daftarBuku.length);
+    setBukuUtama((index) => (index + 1) % books.length);
   }
 
   function bukuSebelumnya() {
     setBukuUtama(
-      (index) => (index - 1 + daftarBuku.length) % daftarBuku.length
+      (index) => (index - 1 + books.length) % books.length
     );
   }
 
@@ -62,20 +30,20 @@ function AlbumContent({ pilihBuku }) {
       <section className="hero-section">
         <div className="hero-content">
           <span className="hero-label">TEMUKAN BUKU FAVORITMU</span>
-          <h1>{buku.judul}: Temukan Cerita dan Inspirasi Baru</h1>
-          <p>{buku.deskripsi}</p>
+          <h1>{buku.title}: Temukan Cerita dan Inspirasi Baru</h1>
+          <p>{buku.description}</p>
 
           <div className="hero-buttons">
             <button
               className="signup-btn hero-buy"
-              onClick={() => alert(`Kamu memilih buku ${buku.judul}`)}
+              onClick={() => alert(`Kamu memilih buku ${buku.title}`)}
             >
               Beli Sekarang
             </button>
 
             <button
               className="detail-btn"
-              onClick={() => pilihBuku(bukuUtama)}
+              onClick={() => pilihBuku(buku.id)}
             >
               Detail Buku
             </button>
@@ -92,7 +60,7 @@ function AlbumContent({ pilihBuku }) {
             </button>
 
             <span>
-              {bukuUtama + 1} / {daftarBuku.length}
+              {bukuUtama + 1} / {books.length}
             </span>
 
             <button
@@ -107,11 +75,15 @@ function AlbumContent({ pilihBuku }) {
         </div>
 
         <div className="hero-image-wrap">
-          <img src={buku.gambar} alt={buku.judul} className="hero-image" />
+          <img
+            src={buku.image}
+            alt={buku.title}
+            className="hero-image"
+          />
           <div className="image-caption">
             <span>Buku Pilihan</span>
-            <strong>{buku.judul}</strong>
-            <small>{buku.penulis}</small>
+            <strong>{buku.title}</strong>
+            <small>{buku.author}</small>
           </div>
         </div>
       </section>
@@ -125,19 +97,26 @@ function AlbumContent({ pilihBuku }) {
           </div>
         </div>
 
+        <button className="signup-btn" onClick={tambahBuku}>
+          + Tambah Buku
+        </button>
+
         <div className="book-grid">
-          {daftarBuku.map((item, index) => (
-            <article className="book-card" key={item.judul}>
-              <img src={item.gambar} alt={item.judul} />
+          {books.map((item) => (
+            <article className="book-card" key={item.id}>
+              <img src={item.image} alt={item.title} />
 
               <div className="book-card-body">
-                <span className="book-category">{item.kategori}</span>
-                <h3>{item.judul}</h3>
-                <p>Oleh {item.penulis}</p>
+                <span className="book-category">
+                  Tahun {item.year}
+                </span>
+                <h3>{item.title}</h3>
+                <p>Oleh {item.author}</p>
+                <p>{item.description}</p>
 
                 <div className="book-card-bottom">
-                  <strong>{item.harga}</strong>
-                  <button onClick={() => pilihBuku(index)}>
+                  <strong>{item.year}</strong>
+                  <button onClick={() => pilihBuku(item.id)}>
                     Lihat Detail
                   </button>
                 </div>
@@ -150,8 +129,9 @@ function AlbumContent({ pilihBuku }) {
   );
 }
 
-function BookContent({ bukuTerpilih, kembali }) {
-  const buku = daftarBuku[bukuTerpilih] || daftarBuku[0];
+function BookContent({ books, bukuTerpilih, kembali }) {
+  const buku =
+    books.find((item) => item.id === bukuTerpilih) || books[0];
 
   return (
     <section className="detail-page">
@@ -160,18 +140,20 @@ function BookContent({ bukuTerpilih, kembali }) {
       </button>
 
       <div className="detail-layout">
-        <img src={buku.gambar} alt={buku.judul} />
+        <img src={buku.image} alt={buku.title} />
 
         <div>
-          <span className="hero-label">{buku.kategori}</span>
-          <h1>{buku.judul}</h1>
-          <p className="detail-author">Ditulis oleh {buku.penulis}</p>
-          <p>{buku.deskripsi}</p>
-          <h2 className="detail-price">{buku.harga}</h2>
+          <span className="hero-label">Tahun {buku.year}</span>
+          <h1>{buku.title}</h1>
+          <p className="detail-author">
+            Ditulis oleh {buku.author}
+          </p>
+          <p>{buku.description}</p>
+          <h2 className="detail-price">{buku.year}</h2>
 
           <button
             className="signup-btn"
-            onClick={() => alert(`Kamu memilih buku ${buku.judul}`)}
+            onClick={() => alert(`Kamu memilih buku ${buku.title}`)}
           >
             Beli Sekarang
           </button>
@@ -221,7 +203,6 @@ function TeamContent() {
                 event.currentTarget.style.display = 'none';
               }}
             />
-
             <h3>{orang.nama}</h3>
             <p>{orang.jabatan}</p>
           </article>
@@ -244,8 +225,8 @@ function ContactContent() {
       <h1>Hubungi Bookstore</h1>
 
       <p className="subpage-intro">
-        Punya pertanyaan atau saran tentang koleksi buku kami? Kirim pesan
-        melalui formulir berikut.
+        Punya pertanyaan atau saran tentang koleksi buku kami?
+        Kirim pesan melalui formulir berikut.
       </p>
 
       <form className="contact-form" onSubmit={kirimPesan}>
@@ -295,11 +276,12 @@ function FooterContent() {
 }
 
 function AppLayout() {
-  const [bukuTerpilih, setBukuTerpilih] = useState(0);
+  const [books, setBooks] = useState(initialBooks);
+  const [bukuTerpilih, setBukuTerpilih] = useState(initialBooks[0].id);
   const navigate = useNavigate();
 
-  function bukaDetail(index) {
-    setBukuTerpilih(index);
+  function bukaDetail(id) {
+    setBukuTerpilih(id);
     navigate('/book');
     window.scrollTo(0, 0);
   }
@@ -307,6 +289,34 @@ function AppLayout() {
   function kembaliHome() {
     navigate('/');
     window.scrollTo(0, 0);
+  }
+
+  function tambahBuku() {
+    const title = prompt('Masukkan judul buku:');
+    if (!title || !title.trim()) return;
+
+    const author = prompt('Masukkan nama penulis:');
+    if (!author || !author.trim()) return;
+
+    const yearInput = prompt('Masukkan tahun terbit:', '2026');
+    const year = Number(yearInput);
+
+    if (!yearInput || !Number.isFinite(year) || year <= 0) {
+      alert('Tahun terbit tidak valid.');
+      return;
+    }
+
+    const newBook = {
+      id: Date.now(),
+      title: title.trim(),
+      author: author.trim(),
+      year,
+      description: 'Buku baru dalam koleksi Bookstore.',
+      image: 'https://placehold.co/300x400?text=Buku+Baru',
+    };
+
+    setBooks((currentBooks) => [...currentBooks, newBook]);
+    alert('Buku berhasil ditambahkan!');
   }
 
   return (
@@ -318,40 +328,23 @@ function AppLayout() {
           </Link>
 
           <nav className="navbar-menu">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                isActive ? 'menu-current' : ''
-              }
-            >
+            <NavLink to="/" end
+              className={({ isActive }) => isActive ? 'menu-current' : ''}>
               Home
             </NavLink>
 
-            <NavLink
-              to="/book"
-              className={({ isActive }) =>
-                isActive ? 'menu-current' : ''
-              }
-            >
+            <NavLink to="/book"
+              className={({ isActive }) => isActive ? 'menu-current' : ''}>
               Book
             </NavLink>
 
-            <NavLink
-              to="/team"
-              className={({ isActive }) =>
-                isActive ? 'menu-current' : ''
-              }
-            >
+            <NavLink to="/team"
+              className={({ isActive }) => isActive ? 'menu-current' : ''}>
               Team
             </NavLink>
 
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                isActive ? 'menu-current' : ''
-              }
-            >
+            <NavLink to="/contact"
+              className={({ isActive }) => isActive ? 'menu-current' : ''}>
               Contact
             </NavLink>
           </nav>
@@ -378,13 +371,20 @@ function AppLayout() {
         <Routes>
           <Route
             path="/"
-            element={<AlbumContent pilihBuku={bukaDetail} />}
+            element={
+              <AlbumContent
+                books={books}
+                tambahBuku={tambahBuku}
+                pilihBuku={bukaDetail}
+              />
+            }
           />
 
           <Route
             path="/book"
             element={
               <BookContent
+                books={books}
                 bukuTerpilih={bukuTerpilih}
                 kembali={kembaliHome}
               />
@@ -392,7 +392,6 @@ function AppLayout() {
           />
 
           <Route path="/team" element={<TeamContent />} />
-
           <Route path="/contact" element={<ContactContent />} />
 
           <Route
